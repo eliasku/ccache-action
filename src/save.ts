@@ -1,11 +1,11 @@
 import * as core from "@actions/core";
 import * as cache from "@actions/cache";
-import * as exec from "@actions/exec";
+import {ccache} from "./common";
 
 async function run() : Promise<void> {
   try{
     core.info("Ccache stats:")
-    await exec.exec("ccache -s");
+    await ccache("-s");
 
     let restoreKey = `ccache-`;
     let inputKey = core.getInput("key");

@@ -55060,29 +55060,47 @@ module.exports = v4;
 
 /***/ }),
 
-/***/ 5131:
+/***/ 6044:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+// ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__
-/* harmony export */ });
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2186);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_cache__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7799);
-/* harmony import */ var _actions_cache__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_actions_cache__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1514);
-/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_actions_exec__WEBPACK_IMPORTED_MODULE_2__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "default": () => /* binding */ save
+});
+
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __webpack_require__(2186);
+// EXTERNAL MODULE: ./node_modules/@actions/cache/lib/cache.js
+var cache = __webpack_require__(7799);
+// EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
+var exec = __webpack_require__(1514);
+// CONCATENATED MODULE: ./src/common.ts
+
+function msys2(cmd, args) {
+    return exec.exec(cmd, ["-c", args.map((s) => `"${s}"`).join(" ")]);
+}
+function ccache(...args) {
+    const platform = process.platform;
+    if (platform === "win32") {
+        return msys2("ccache", args);
+    }
+    return exec.exec("ccache", args);
+}
+
+// CONCATENATED MODULE: ./src/save.ts
 
 
 
 async function run() {
     try {
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("Ccache stats:");
-        await _actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec("ccache -s");
+        core.info("Ccache stats:");
+        await ccache("-s");
         let restoreKey = `ccache-`;
-        let inputKey = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("key");
+        let inputKey = core.getInput("key");
         if (inputKey) {
             restoreKey += `${inputKey}-`;
         }
@@ -55090,15 +55108,15 @@ async function run() {
         const paths = [
             '.ccache'
         ];
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Save cache using key "${key}".`);
-        await _actions_cache__WEBPACK_IMPORTED_MODULE_1__.saveCache(paths, key);
+        core.info(`Save cache using key "${key}".`);
+        await cache.saveCache(paths, key);
     }
     catch (error) {
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(error.message);
+        core.setFailed(error.message);
     }
 }
 run();
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (run);
+/* harmony default export */ const save = (run);
 
 
 /***/ }),
@@ -55357,6 +55375,6 @@ module.exports = require("zlib");;
 /******/ 	// module exports must be returned from runtime so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(5131);
+/******/ 	return __webpack_require__(6044);
 /******/ })()
 ;

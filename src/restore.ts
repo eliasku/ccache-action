@@ -3,6 +3,7 @@ import * as io from "@actions/io";
 import * as exec from "@actions/exec";
 import * as process from "process";
 import * as cache from "@actions/cache";
+import {ccache} from "./common";
 
 // based on https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/
 
@@ -50,12 +51,12 @@ async function configure() {
   const maxSize = core.getInput('max-size');
   
   core.info("Configure ccache");
-  await exec.exec("ccache --set-config=cache_dir=" + ghWorkSpace + "/.ccache");
-  await exec.exec("ccache --set-config=max_size=" + maxSize);
-  await exec.exec("ccache --set-config=compression=true");
+  await ccache("--set-config=cache_dir=" + ghWorkSpace + "/.ccache");
+  await ccache("--set-config=max_size=" + maxSize);
+  await ccache("--set-config=compression=true");
 
   core.info("Ccache config:")
-  await exec.exec("ccache -p");
+  await ccache("-p");
 }
 
 async function run() : Promise<void> {
@@ -64,13 +65,15 @@ async function run() : Promise<void> {
     if (!ccachePath) {
       core.info(`Install ccache`);
       await install();
-      ccachePath = await io.which("ccache", true);
+      if(process.platform !== "win32") {
+        ccachePath = await io.which("ccache", true);
+      }
     }
 
     await restore();
     await configure();
 
-    await exec.exec("ccache -z");
+    await ccache("-z");
   } catch (error) {
     core.setFailed(error.message);
   }

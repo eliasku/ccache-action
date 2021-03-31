@@ -55060,7 +55060,7 @@ module.exports = v4;
 
 /***/ }),
 
-/***/ 6954:
+/***/ 2130:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -55082,7 +55082,21 @@ var exec = __webpack_require__(1514);
 const external_process_namespaceObject = require("process");;
 // EXTERNAL MODULE: ./node_modules/@actions/cache/lib/cache.js
 var cache = __webpack_require__(7799);
+// CONCATENATED MODULE: ./src/common.ts
+
+function msys2(cmd, args) {
+    return exec.exec(cmd, ["-c", args.map((s) => `"${s}"`).join(" ")]);
+}
+function ccache(...args) {
+    const platform = process.platform;
+    if (platform === "win32") {
+        return msys2("ccache", args);
+    }
+    return exec.exec("ccache", args);
+}
+
 // CONCATENATED MODULE: ./src/restore.ts
+
 
 
 
@@ -55129,11 +55143,11 @@ async function configure() {
     const ghWorkSpace = external_process_namespaceObject.env.GITHUB_WORKSPACE;
     const maxSize = core.getInput('max-size');
     core.info("Configure ccache");
-    await exec.exec("ccache --set-config=cache_dir=" + ghWorkSpace + "/.ccache");
-    await exec.exec("ccache --set-config=max_size=" + maxSize);
-    await exec.exec("ccache --set-config=compression=true");
+    await ccache("--set-config=cache_dir=" + ghWorkSpace + "/.ccache");
+    await ccache("--set-config=max_size=" + maxSize);
+    await ccache("--set-config=compression=true");
     core.info("Ccache config:");
-    await exec.exec("ccache -p");
+    await ccache("-p");
 }
 async function run() {
     try {
@@ -55141,11 +55155,13 @@ async function run() {
         if (!ccachePath) {
             core.info(`Install ccache`);
             await install();
-            ccachePath = await io.which("ccache", true);
+            if (external_process_namespaceObject.platform !== "win32") {
+                ccachePath = await io.which("ccache", true);
+            }
         }
         await restore();
         await configure();
-        await exec.exec("ccache -z");
+        await ccache("-z");
     }
     catch (error) {
         core.setFailed(error.message);
@@ -55411,6 +55427,6 @@ module.exports = require("zlib");;
 /******/ 	// module exports must be returned from runtime so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(6954);
+/******/ 	return __webpack_require__(2130);
 /******/ })()
 ;
