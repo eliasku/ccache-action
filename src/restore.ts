@@ -13,7 +13,7 @@ async function install() {
   } else if(platform === "linux") {
     await exec.exec("sudo apt-get install -y ccache");
   } else if(platform === "win32") {
-    await exec.exec("msys2 pacman --noconfirm -S ccache");
+    await exec.exec(`msys2 -c "'pacman' '--noconfirm' '-S' 'ccache'"`);
   } else {
     core.info("unknown platform: " + platform);
   }
