@@ -55090,11 +55090,18 @@ var cache = __webpack_require__(7799);
 
 // based on https://cristianadam.eu/20200113/speeding-up-c-plus-plus-github-actions-using-ccache/
 async function install() {
-    if (external_process_namespaceObject.platform === "darwin") {
+    const platform = external_process_namespaceObject.platform;
+    if (platform === "darwin") {
         await exec.exec("brew install ccache");
     }
-    else {
+    else if (platform === "linux") {
         await exec.exec("sudo apt-get install -y ccache");
+    }
+    else if (platform === "win32") {
+        await exec.exec("msys2 pacman --noconfirm -S ccache");
+    }
+    else {
+        core.info("unknown platform: " + platform);
     }
 }
 async function restore() {
