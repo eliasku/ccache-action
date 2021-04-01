@@ -9,7 +9,7 @@ import * as cache from "@actions/cache";
 async function install() {
   if (process.platform === "darwin") {
     await exec.exec("brew install ccache");
-  } else {
+  } else if (process.platform === "linux") {
     await exec.exec("sudo apt-get install -y ccache");
   }
 }
@@ -56,7 +56,7 @@ async function configure() {
 async function run() : Promise<void> {
   try {
     let ccachePath = await io.which("ccache");
-    if (!ccachePath) {
+    if (ccachePath == null) {
       core.info(`Install ccache`);
       await install();
       ccachePath = await io.which("ccache", true);

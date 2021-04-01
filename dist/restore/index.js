@@ -55093,7 +55093,7 @@ async function install() {
     if (external_process_namespaceObject.platform === "darwin") {
         await exec.exec("brew install ccache");
     }
-    else {
+    else if (external_process_namespaceObject.platform === "linux") {
         await exec.exec("sudo apt-get install -y ccache");
     }
 }
@@ -55131,7 +55131,7 @@ async function configure() {
 async function run() {
     try {
         let ccachePath = await io.which("ccache");
-        if (!ccachePath) {
+        if (ccachePath == null) {
             core.info(`Install ccache`);
             await install();
             ccachePath = await io.which("ccache", true);
