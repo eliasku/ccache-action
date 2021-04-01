@@ -56,7 +56,7 @@ async function configure() {
 async function run() : Promise<void> {
   try {
     let ccachePath = await io.which("ccache");
-    if (ccachePath == null) {
+    if (!ccachePath) {
       core.info(`Install ccache`);
       await install();
       ccachePath = await io.which("ccache", true);
