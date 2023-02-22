@@ -9,7 +9,7 @@ inputs:
     description: "Max size of the cache"
     default: "500M"
 runs:
-  using: "node12"
+  using: "node16"
   main: "dist/restore/index.js"
   post: "dist/save/index.js"
   post-if: "success()"
