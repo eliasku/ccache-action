@@ -11,7 +11,7 @@ async function install() {
   const platform = process.platform;
   if (platform === "darwin") {
     await exec.exec("brew install ccache");
-  } else if(platform === "linux") {
+  } else if (process.platform === "linux") {
     await exec.exec("sudo apt-get install -y ccache");
   } else if(platform === "win32") {
     await exec.exec(`msys2 -c "'pacman' '--noconfirm' '-S' 'ccache'"`);
